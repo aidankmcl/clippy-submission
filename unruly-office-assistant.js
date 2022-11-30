@@ -9,7 +9,8 @@ const POSITION_ATTRIBUTES = ['top', 'right', 'bottom', 'left'];
 export default class UnrulyOfficeAssistant extends HTMLElement {
     
     static get styles() {
-        const bgColor = "yellow";
+        const bgColor = "white";
+        const borderColor = "#444";
 
         return `
         <style>
@@ -22,10 +23,20 @@ export default class UnrulyOfficeAssistant extends HTMLElement {
                 border: 1px solid #333;
             }
 
+            button:hover {
+                background: #eee;
+            }
+
             #dialog {
-                width: 250px;
+                width: 223px;
+                margin-left: 7px;
+                border-radius: 45% 40% 4px 4px;
+                margin-bottom: -4px;
                 background: ${bgColor};
-                padding: 15px;
+                padding: 40px 20px 15px 20px;
+                border-left: 6px solid ${borderColor};
+                border-right: 13px solid ${borderColor};
+                border-top: 7px solid ${borderColor};
             }
 
             #tip-container {
@@ -51,11 +62,11 @@ export default class UnrulyOfficeAssistant extends HTMLElement {
 
                 <div id="tip-container">
                   <slot id="tip-text" name="tip"></slot>
-                  <button id="close-dialog-button" role="button">Thanks Clippy</button>
+                  <button id="close-dialog-button" role="button">Thanks kitty</button>
                 </div>
               </div>
 
-              <img src="//via.placeholder.com/200x200" />
+              <img src="./unruly-cat.png" />
             </div>
         `;
     }
