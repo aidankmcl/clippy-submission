@@ -52,17 +52,17 @@ export default class UnrulyOfficeAssistant extends HTMLElement {
               <div id="dialog">
                 <div id="intro">
                   <slot name="prompt"></slot>
-                  <button id="accept-button" role="button">
+                  <button id="accept-button">
                     <slot name="accept"></slot>
                   </button>
-                  <button id="decline-button" role="button">
+                  <button id="decline-button">
                     <slot name="decline"></slot>
                   </button>
                 </div>
 
                 <div id="tip-container">
                   <slot id="tip-text" name="tip"></slot>
-                  <button id="close-dialog-button" role="button">Thanks kitty</button>
+                  <button id="close-dialog-button">Thanks kitty</button>
                 </div>
               </div>
 
