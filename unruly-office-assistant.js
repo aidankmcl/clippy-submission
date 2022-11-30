@@ -1,42 +1,67 @@
 /**
- * A button.
+ * A clippy-inspired office assistant that aims to help users with tips!
  * 
  * @element unruly-office-assistant
 */
 
+const POSITION_ATTRIBUTES = ['top', 'right', 'bottom', 'left'];
+
 export default class UnrulyOfficeAssistant extends HTMLElement {
     
     static get styles() {
+        const bgColor = "yellow";
+
         return `
         <style>
             button {
-                display: flex;
-                font-family: sans-serif;
-                font-weight: 500;
-                font-size: 24px;
-            	cursor: pointer;
-                color:#ffffff;
-                border: none;
-                border-radius:12px;
-                height: 50px;
-                justify-content: space-around;
-                align-items: center;
+                cursor: pointer;
+                display: block;
+                margin: 10px 0;
+                padding: 4px 6px;
+                background: ${bgColor};
+                border: 1px solid #333;
             }
-            </style>
+
+            #dialog {
+                width: 250px;
+                background: ${bgColor};
+                padding: 15px;
+            }
+
+            #tip-container {
+                display: none;
+            }
+        </style>
         `;
     }
   
     static get markup() { 
         return `
-            <button id="button-container">
-              <div id="icon">🐷</div>
-              <div id="label"><slot></slot></div>
-            </button>
+            <div id="office-assistant-container">
+              <div id="dialog">
+                <div id="intro">
+                  <slot name="prompt"></slot>
+                  <button id="accept-button" role="button">
+                    <slot name="accept"></slot>
+                  </button>
+                  <button id="decline-button" role="button">
+                    <slot name="decline"></slot>
+                  </button>
+                </div>
+
+                <div id="tip-container">
+                  <slot id="tip-text" name="tip"></slot>
+                  <button id="close-dialog-button" role="button">Thanks Clippy</button>
+                </div>
+              </div>
+
+              <img src="//via.placeholder.com/200x200" />
+            </div>
         `;
     }
  
     static get observedAttributes() { 
-        return ['color', 'width'];
+        return [...POSITION_ATTRIBUTES];
     }
 
     constructor() {
@@ -57,29 +82,44 @@ export default class UnrulyOfficeAssistant extends HTMLElement {
     }
     
     initializeElements() {
-        this.icon = this.shadowRoot.querySelector('#icon');
-        this.button = this.shadowRoot.querySelector('#button-container');
+        this.container = this.shadowRoot.querySelector("#office-assistant-container");
+
+        this.intro = this.shadowRoot.querySelector("#intro");
+        this.acceptButton = this.shadowRoot.querySelector('#accept-button');
+        this.declineButton = this.shadowRoot.querySelector('#decline-button');
+
+        this.tipContainer = this.shadowRoot.querySelector("#tip-container");
+        this.closeButton = this.shadowRoot.querySelector("#close-dialog-button");
     }
   
     addEventListeners() {
-        this.pressedCallback = this.buttonPressed.bind(this);
-        this.button.addEventListener('click', this.pressedCallback);
+        this.acceptedCallback = this.acceptedTip.bind(this);
+        this.closedCallback = this.closedTip.bind(this);
+
+        this.acceptButton.addEventListener('click', this.acceptedCallback);
+        this.declineButton.addEventListener('click', this.closedCallback);
+        this.closeButton.addEventListener('click', this.closedCallback);
     }
     
     removeEventListeners() {
-        this.button.removeEventListener('click', this.pressedCallback);
+        this.acceptButton.removeEventListener('click', this.acceptedCallback);
+        this.declineButton.removeEventListener('click', this.closedCallback);
+        this.closeButton.removeEventListener('click', this.closedCallback);
     }
-    
-    buttonPressed() {
-        alert('Hello, World!');
+
+    acceptedTip() {
+        this.intro.style['display'] = 'none';
+        this.tipContainer.style['display'] = 'block';
+    }
+
+    closedTip() {
+        this.container.style['display'] = 'none';
     }
     
     attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'color'){
-            this.button.style['background-color'] = newValue;
-        }
-        if (name === 'width'){
-            this.button.style.width = `${newValue}px`;
+        if (POSITION_ATTRIBUTES.includes(name)){
+            this.container.style['position'] = 'fixed';
+            this.container.style[name] = newValue;
         }
     }
 }
